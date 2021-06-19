@@ -1,0 +1,27 @@
+create database bloque;
+
+use bloque;
+create table indice (id int IDENTITY(1,1), valores int, nombre nvarchar(50));
+insert into indice values(8, 'Paint');
+select * from indice;
+drop table indice;
+
+delete from indice where id>2;
+
+create procedure consulta_comp
+	@primerbloque int,
+	@valores int output
+
+	as
+	begin
+		set @valores = (select valores from indice where valores = @primerbloque);
+	end
+
+create procedure insertar_bloque
+	@nombre nvarchar(50),
+	@valores int
+
+	as
+	begin
+		insert into indice values(@valores, @nombre);
+	end

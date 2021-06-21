@@ -53,7 +53,7 @@ namespace Bloques
                     do {
                         primerbloque = r.Next(1, 26);
                         comp = consultarBloque(primerbloque);
-                        MessageBox.Show(Convert.ToString(primerbloque));
+                       // MessageBox.Show(Convert.ToString(primerbloque));
                         i++;
                     } while (primerbloque == comp);
                     insertar_bloque(primerbloque, textName.Text);
@@ -302,6 +302,114 @@ namespace Bloques
             }
         }
 
+
+        public void borrar_enPantalla(int pos)
+        {
+            string nombre = "vacio";
+            switch (pos)
+            {
+                case 1:
+                    pane1.BackColor = Color.Blue;
+                    labe1.Text = nombre;
+                    break;
+                case 2:
+                    pane2.BackColor = Color.Blue;
+                    labe2.Text = nombre;
+                    break;
+                case 3:
+                    pane3.BackColor = Color.Blue;
+                    labe3.Text = nombre;
+                    break;
+                case 4:
+                    pane4.BackColor = Color.Blue;
+                    labe4.Text = nombre;
+                    break;
+                case 5:
+                    pane5.BackColor = Color.Blue;
+                    labe5.Text = nombre;
+                    break;
+                case 6:
+                    pane6.BackColor = Color.Blue;
+                    label71.Text = nombre;
+                    break;
+                case 7:
+                    pane7.BackColor = Color.Blue;
+                    label72.Text = nombre;
+                    break;
+                case 8:
+                    pane8.BackColor = Color.Blue;
+                    label73.Text = nombre;
+                    break;
+                case 9:
+                    pane9.BackColor = Color.Blue;
+                    label74.Text = nombre;
+                    break;
+                case 10:
+                    pane10.BackColor = Color.Blue;
+                    label75.Text = nombre;
+                    break;
+                case 11:
+                    pane11.BackColor = Color.Blue;
+                    label76.Text = nombre;
+                    break;
+                case 12:
+                    pane12.BackColor = Color.Blue;
+                    label77.Text = nombre;
+                    break;
+                case 13:
+                    pane13.BackColor = Color.Blue;
+                    label78.Text = nombre;
+                    break;
+                case 14:
+                    pane14.BackColor = Color.Blue;
+                    label79.Text = nombre;
+                    break;
+                case 15:
+                    pane15.BackColor = Color.Blue;
+                    label80.Text = nombre;
+                    break;
+                case 16:
+                    pane16.BackColor = Color.Blue;
+                    label81.Text = nombre;
+                    break;
+                case 17:
+                    pane17.BackColor = Color.Blue;
+                    label82.Text = nombre;
+                    break;
+                case 18:
+                    pane18.BackColor = Color.Blue;
+                    label83.Text = nombre;
+                    break;
+                case 19:
+                    pane19.BackColor = Color.Blue;
+                    label84.Text = nombre;
+                    break;
+                case 20:
+                    pane20.BackColor = Color.Blue;
+                    label85.Text = nombre;
+                    break;
+                case 21:
+                    pane21.BackColor = Color.Blue;
+                    label86.Text = nombre;
+                    break;
+                case 22:
+                    pane22.BackColor = Color.Blue;
+                    label87.Text = nombre;
+                    break;
+                case 23:
+                    pane23.BackColor = Color.Blue;
+                    label88.Text = nombre;
+                    break;
+                case 24:
+                    pane24.BackColor = Color.Blue;
+                    label89.Text = nombre;
+                    break;
+                case 25:
+                    pane25.BackColor = Color.Blue;
+                    label90.Text = nombre;
+                    break;
+            }
+        }
         public void insertar_bloque(int valores, string nombre)
         {
             SqlConnection conexionBD = new SqlConnection(conexion);
@@ -374,6 +482,174 @@ namespace Bloques
         }
 
         private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        public void borrar_primerValor(int pos)
+        {
+            SqlConnection conexionBD = new SqlConnection(conexion);
+            SqlCommand comando = new SqlCommand("borrar_primerValor", conexionBD);
+            comando.CommandType = CommandType.StoredProcedure;
+            comando.Parameters.AddWithValue("@valores", pos);
+            try
+            {
+               conexionBD.Open();
+                comando.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+                
+                conexionBD.Dispose();
+                comando.Dispose();
+            }
+        }
+
+        private void delete_Click(object sender, EventArgs e){
+            if(textEliminar.Text == "") {
+                MessageBox.Show("Por ingresa el nombre del proceso a eliminar");
+            } else {
+                int total = total_valores(textEliminar.Text);
+
+                if (total == 0) {
+                    MessageBox.Show("No hay bloques con ese nombre");
+                }
+                else{
+                    //MessageBox.Show("SI hay bloques con ese nombre");
+                    
+                    
+
+                    for(int iterador=0; iterador<total; iterador++){
+                        SqlConnection conexionBD = new SqlConnection(conexion);
+                        SqlCommand comando = new SqlCommand("recuperar_valores", conexionBD);
+                        comando.CommandType = CommandType.StoredProcedure;
+                        comando.Parameters.AddWithValue("@nombre", textEliminar.Text);
+                        comando.Parameters.Add("@valor", SqlDbType.Int);
+                        comando.Parameters["@valor"].Direction = ParameterDirection.Output;
+                        try
+                        {
+                            conexionBD.Open();
+                            comando.ExecuteNonQuery();
+                        } catch (Exception ex) {
+
+                        } finally {
+                            int pos = Convert.ToInt32(comando.Parameters["@valor"].Value.ToString());      
+                            borrar_enPantalla(pos);
+                            
+                            conexionBD.Dispose();
+                            comando.Dispose();
+                            borrar_primerValor(pos);
+                        }
+                        
+                    }      
+                }
+            }
+        }
+
+        public int total_valores(string nombre){
+            int total = 100;
+            SqlConnection conexionBD = new SqlConnection(conexion);
+            SqlCommand comando = new SqlCommand("total_valores", conexionBD);
+            comando.CommandType = CommandType.StoredProcedure;
+            comando.Parameters.AddWithValue("@nombre", nombre);
+            comando.Parameters.Add("@valores", SqlDbType.Int);
+            comando.Parameters["@valores"].Direction = ParameterDirection.Output;
+
+            try
+            {
+                conexionBD.Open();
+                comando.ExecuteNonQuery();
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+                
+                string cadena = "";
+                cadena = comando.Parameters["@valores"].Value.ToString();        
+                total = Convert.ToInt32(cadena);
+                conexionBD.Dispose();
+                comando.Dispose();
+            }
+            return total;
+        }
+
+        private void pane25_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+        private void pane19_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+        private void pane18_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+        private void pane23_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+        private void pane22_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+        private void pane17_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+        private void pane21_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+        private void pane16_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+        private void pane11_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+        private void pane12_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+        private void pane13_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+        private void pane14_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+        private void pane15_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+        private void pane10_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+        private void pane9_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+        private void pane8_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+        private void pane6_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+        private void pane2_Paint(object sender, PaintEventArgs e)
         {
 
         }
